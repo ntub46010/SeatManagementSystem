@@ -31,7 +31,7 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
 public class MyWebService {
 	private String server = "localhost";
 	private String dbName = "SCSBSeatMgt";
-	private String user = "sa";
+	private String user = "user";
 	private String pwd = "Sc2014sb06";
 
 	public Connection ConnectDB() throws ClassNotFoundException, SQLException {
@@ -39,9 +39,8 @@ public class MyWebService {
 		Connection conn = DriverManager.getConnection("jdbc:sqlserver://" + server
 	        	  + ";databaseName=" + dbName + ";user=" + user + ";password=" + pwd);
 		return conn;
-	}
+	}	
 	
-	//µn¤J
 	@Context private HttpServletRequest request;
 	@POST
 	@Path("/login")
@@ -85,9 +84,7 @@ public class MyWebService {
 		}
 	}
 	public String[] UserLogin(int Iaccount, String pwd, Connection conn) throws SQLException{
-		//String loginSql = "SELECT * from EMPLOYEE WHERE Id = " + Iaccount + " and Password = '" + pwd + "'";
-		String loginSql = "exec µn¤JÅçÃÒ " + Iaccount + ", '" + pwd + "'";
-		//String isLogin;
+		String loginSql = "exec ç™»å…¥ " + Iaccount + ", '" + pwd + "'";
 		Statement stmt = null;
 		stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(loginSql);
@@ -95,39 +92,35 @@ public class MyWebService {
 	    if(rs.next()) {
 	    	result[0] = "Success";
 	    	result[1] = rs.getString(1);
-	        //isLogin = "Success";
 	    }
 	    else {
 	    	result[0] = "Fail";
 	    	result[1] = "";
-	        //isLogin = "Failed";
 	    }
 		return result;
 	}
 		
-	//Åã¥Ü®y¦ìªí
+	//é¡¯ç¤ºåº§ä½è¡¨
 	@POST
-    @Path("/seat")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getSeatTable(String jsonString) {
+    	@Path("/seat")
+    	@Produces(MediaType.APPLICATION_JSON)
+    	public String getSeatTable(String jsonString) {
 		try {
-			//¨ú±o¼Ó¼h¸¹
 			JSONObject obj = new JSONObject(jsonString);
 			String floor = obj.getString("Floor");
 			
 			JSONObject parentObj = new JSONObject();
 
-			//¨ú±o¼Ó¼hªø¼e
 			JSONArray parentAry = new JSONArray(getQueryJSONString(
-	        		"exec ¨ú±o¼Ó¼hªø¼e " + floor
+	        		"exec å–å¾—æ¨“å±¤é•·å¯¬ " + floor
 	        		));
 			JSONObject tmpObj = parentAry.getJSONObject(0);
 			parentObj.put("Column", tmpObj.getString("Column"));
 			parentObj.put("Row", tmpObj.getString("Row"));
 
-			//¨ú±o®y¦ìÂà¦¨¤l°}¦C
+			//å–å¾—è©²æ¨“å±¤åº§ä½è¡¨
 			JSONArray childAry = new JSONArray(getQueryJSONString(
-	        		"exec Åã¥Ü®y¦ìªí " + floor
+	        		"exec å–å¾—åº§ä½è¡¨ " + floor
 	        		));			
 			parentObj.put("Seat", childAry);
 			
@@ -135,29 +128,27 @@ public class MyWebService {
 		}catch (JSONException e) {
 			e.printStackTrace();			
 		}
-		//¬d¸ß¥¢±Ñ		
 		return "[]";
-    }
+    	}
 		
-    //¨ú±o³æ¤HÀÉ®×
-    @POST
-    @Path("/profile")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getProfile(String jsonString) {
-    	try {
+    	//é¡¯ç¤ºå€‹äººæª”æ¡ˆ
+    	@POST
+    	@Path("/profile")
+    	@Produces(MediaType.APPLICATION_JSON)
+    	public String getProfile(String jsonString) {
+    		try {
 			JSONObject obj = new JSONObject(jsonString);
 			String employeeId = obj.getString("EmployeeId");
 			return getQueryJSONString(
-	        		"exec Åã¥Ü³æ¤HÀÉ®× " + employeeId
+	        		"exec é¡¯ç¤ºå€‹äººæª”æ¡ˆ " + employeeId
 	        		);
 		}catch (JSONException e) {
 			e.printStackTrace();			
-		}
-		//¬d¸ß¥¢±Ñ		
+		}	
 		return "[]";
-    }
+    	}
     
-    //¦æ½s¬d¸ß
+    	//æœå°‹è¡Œç·¨
 	@POST
 	@Path("/search_by_id")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -165,18 +156,16 @@ public class MyWebService {
 		try {			
 			JSONObject obj = new JSONObject(jsonString);
 			String employeeId = obj.getString("EmployeeId");
-			System.out.println("QQ");
 			return getQueryJSONString(
-	        		"exec ¬d¸ß¦æ½s " + employeeId
+	        		"exec æœå°‹è¡Œç·¨ " + employeeId
 	        		);
 		}catch (JSONException e) {
 			e.printStackTrace();
 		}
-		//¬d¸ß¥¢±Ñ		
 		return "[]";
 	}
 	
-	//©m¦W¬d¸ß
+	//æœå°‹å§“å
 	@POST
 	@Path("/search_by_name")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -185,16 +174,15 @@ public class MyWebService {
 			JSONObject obj = new JSONObject(jsonString);
 			String name = obj.getString("Name");
 			return getQueryJSONString(
-	        		"exec ¬d¸ß©m¦W '" + name + "'"
+	        		"exec æœå°‹å§“å '" + name + "'"
 	        		);
 		}catch (JSONException e) {
 			e.printStackTrace();
 		}
-		//¬d¸ß¥¢±Ñ		
 		return "[]";
 	}
 	
-	//¬ì§O¬d¸ß
+	//æœå°‹ç§‘åˆ¥
 	@POST
 	@Path("/search_by_dep")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -203,16 +191,15 @@ public class MyWebService {
 			JSONObject obj = new JSONObject(jsonString);
 			String dep = obj.getString("Department");
 			return getQueryJSONString(
-	        		"exec ¬d¸ß¬ì§O " + dep
+	        		"exec æœå°‹ç§‘åˆ¥ " + dep
 	        		);
 		}catch (JSONException e) {
 			e.printStackTrace();
-		}
-		//¬d¸ß¥¢±Ñ		
+		}	
 		return "[]";
 	}
 	
-	//¤À¾÷¬d¸ß
+	//æœå°‹åˆ†æ©Ÿ
 	@POST
 	@Path("/search_by_ext")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -221,26 +208,25 @@ public class MyWebService {
 			JSONObject obj = new JSONObject(jsonString);
 			String ext = obj.getString("Extension");
 			return getQueryJSONString(
-	        		"exec ¬d¸ß¤À¾÷ " + ext
+	        		"exec æœå°‹åˆ†æ©Ÿ " + ext
 	        		);
 		}catch (JSONException e) {
 			e.printStackTrace();
 		}
-		//¬d¸ß¥¢±Ñ
 		return "[]";
 	}
 	
-	//¬d¸ß¨S®y¦ì­û¤u
+	//æœå°‹ç„¡åº§ä½å“¡å·¥
 	@POST
 	@Path("/search_without_seat")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String searchWithoutSeat() {
 		return getQueryJSONString(
-        		"exec ¬d¸ßµL®y¦ì­û¤u"
+        		"exec æœå°‹ç„¡åº§ä½å“¡å·¥"
         		);
 	}
 	
-	//¦h­«±ø¥ó¬d¸ß­û¤u
+	//å¤šé‡æ¢ä»¶æŸ¥è©¢
 	@POST
 	@Path("/search_by_multiple")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -267,12 +253,11 @@ public class MyWebService {
 		return"[]";
 	}
 	
-	//¦C¥Ü¬ì§O
+	//åˆ—ç¤ºç§‘åˆ¥
 	@POST
 	@Path("/list_dep")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String searchDep() throws ClassNotFoundException, SQLException, JSONException {
-		//return getQueryJSONString("select DepName from DEPARTMENT");
 		Connection conn = ConnectDB();
 		ResultSet rs = SearchDepartmentSql(conn);
 		JSONObject j = new JSONObject();
@@ -294,31 +279,29 @@ public class MyWebService {
 		JSONObject jsonObj = null;
 		
 		try {
-	        Connection con = ConnectDB();
-	        Statement s = con.createStatement();
-	        ResultSet r = s.executeQuery(statement);
+	        	Connection con = ConnectDB();
+	        	Statement s = con.createStatement();
+	        	ResultSet r = s.executeQuery(statement);
 	        	        
-	        ResultSetMetaData metaData = r.getMetaData();
-	        int columnCount = metaData.getColumnCount();
-	        jsonAry = new JSONArray();
+	        	ResultSetMetaData metaData = r.getMetaData();
+	        	int columnCount = metaData.getColumnCount();
+	        	jsonAry = new JSONArray();
 	        
-	        while (r.next()) {
-	        	jsonObj = new JSONObject();
-	        	
-		        for (int i=1; i<=columnCount; i++){
-		        	String columnName = metaData.getColumnLabel(i);
-		        	String value = r.getString(columnName);
-		        	jsonObj.put(columnName, value);
-		        }
-		        jsonAry.put(jsonObj);		        
-	        }
-	        s.close();
-	        con.close();
-	    }catch (Exception e) {
-	    	e.printStackTrace();
-	    }
-		
-		return jsonAry.toString();    	
-    }	
-	
+	        	while (r.next()) {
+				jsonObj = new JSONObject();
+
+				for (int i=1; i<=columnCount; i++){
+					String columnName = metaData.getColumnLabel(i);
+					String value = r.getString(columnName);
+					jsonObj.put(columnName, value);
+		        	}
+		        	jsonAry.put(jsonObj);		        
+			}
+			s.close();
+			con.close();
+		    }catch (Exception e) {
+			e.printStackTrace();
+		    }		
+		Â  Â  return jsonAry.toString();    	
+    	}
 }
